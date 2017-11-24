@@ -2,8 +2,7 @@
 class newTimeShift {
   constructor(){
     this.arr = new Array();
-    console.log("constructor:",this.arr);
-    }
+  }
 
   add(start , end){
     //case0 negatie inputs
@@ -25,86 +24,69 @@ class newTimeShift {
     }
 
     else {
+
       for (var i = 0; i <this.arr.length; i++) {
         let timeSlot = this.arr[i];
         let currS = timeSlot[0];
         let currE = timeSlot[1];
-        let sumAdd = start+end;
-        let sumCurr = currS+currE;
+        if(this.inRange(start,end,timeSlot)){
+          return;
+        }
+        if (this.arr[i+1] && this.inRange(currE,this.arr[i+1][0],[start,end])) {
+          console.log("inside inRnage :", this.arr);
+          this.arr[i]=[currS,this.arr[i+1][1]];
+          this.arr.splice(i+1,1);
+          i--;
+        }
 
         // case4 , adding numbers are bigger than the shift. Swallows the current
-        if (currS>start && currE<end) {
+        else if (currS>start && currE<end) {
           this.arr[i][0]=start;
           this.arr[i][1]=end;
           console.log("1");
 
-          }
-          // case5, if start to be added is lower than the current start
+        }
+        // case5, if start to be added is lower than the current start
         else if (currS>start &&  currE>=end && end>currS) {
-          console.log("current S",currS);
+          console.log("stage 2 array: ",this.arr);
           this.arr[i][0]=start;
-          console.log("2");
-          }
-          // case6, if right is higher=end to be added is greater than current end shift
+          return;
+        }
+        // case6, if right is higher=end to be added is greater than current end shift
         else if (currS<=start &&  currE<end  && start <=currE) {
+          console.log("stage 3 array: ", this.arr);
           this.arr[i][0]=currS;
           this.arr[i][1]=end;
-          console.log("3");
-          }
-          // case7
+          break;
+        }
+        // case7
         else if ((!this.arr[i+1]) && start>currE ) {
-          console.log("4");
-              this.arr.push([start,end]);
-              break;
-            }
+          console.log("stage 4 array:", this.arr);
+          this.arr.push([start,end]);
+          break;
+        }
         else if (this.arr[i+1] && start>currE && end<this.arr[i+1][0]) {
+          console.log("stage 5 array: ", this.arr);
           this.arr.splice(i+1,0,[start,end]);
           break;
         }
         else if (end<currS) {
           this.arr.splice(i,0,[start,end]);
+          console.log("stage 6 =", currS );
           break;
         }
+      }
 
+    } //end else
+  } //end of add
+  //checking the range function to return true if an input is in between the values
+  inRange(currE,nextS,arr){
+    if (currE>=arr[0] && currE<=arr[1] && nextS<=arr[1] && nextS >=arr[0]) {
+      return true;
+    }
+  }
+} //end of class
 
-
-        // else if (this.arr[i+1]) {
-        //   let sumNext = this.arr[i+1][0] + this.arr[i+1][1];
-        //   if (sumAdd > sumCurr && sumAdd < sumNext){
-        //     console.log("curr arr" , this.arr);
-        //     this.arr.splice(i,0,[start,end]);
-        //     console.log("after splice:", this.arr);
-        //     break;
-        //   }
-        //
-        // }
-        // else if (sumAdd > sumCurr){
-        //   console.log("before splice" , this.arr);
-        //   this.arr.splice(i+1,0,[start,end]);
-        //   break;
-        // }
-        // else {
-        //   this.arr.splice(i,0,[start,end]);
-        //   break;
-        // }
-
-         // case4 within the timsshif
-        // if (start>currS && end<currE ) {
-        //
-        //   }
-
-        // case4 add start less than the current time shift start
-
-
-        // else if (currS<end ) {
-        //   this.arr.push([start,end]);
-        //   break;
-        //   }
-        }
-
-      } //end else
-    } //end of add
-  } //end of class
 
 let ali = new newTimeShift();
 // ali.add(0,6);
@@ -112,17 +94,19 @@ let ali = new newTimeShift();
 // // ali.add(1,25);
 // ali.add(2,7);
 // ali.add(2,3);
-ali.add(3,10); //1,7
+ali.add(3,7); //1,7
 ali.add(1,2);
+ali.add(1,5);
 ali.add(11,12);
-// ali.add(2,9);
+ali.add(2,9);
 // ali.add(13,15);
-// ali.add(1,5);
+ali.add(0,5);
 // ali.add(-2,4);
 // ali.add(2,8);
-// ali.add(0,3);
-// ali.add(4,15);
-// ali.add(16,24);
+ali.add(14,15);
+ali.add(11,13);
+ali.add(16,17);
+ali.add(0,14);
 // console.log(ali);
 // ali.remove(2,4);
 console.log(ali);
